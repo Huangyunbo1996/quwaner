@@ -2,6 +2,18 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from . import db
 from datetime import datetime
 
+
+class Follow(db.Model):
+    follower_id = db.Column(db.Integer,primary_key=True) #粉丝
+    followed_id = db.Column(db.Integer,primary_key=True) #被关注的人
+    timestamp = db.Column(db.DateTime,default=datetime.now)
+
+
+like = db.Table('like',
+                db.Column('user_id',db.Integer,db.ForeignKey('user.id')),
+                db.Column('travel_id',db.Integer,db.ForeignKey('travel.id')))
+
+
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -13,14 +25,16 @@ class User(db.Model):
     city = db.Column(db.String(40))
     register_time = db.Column(db.DateTime,default=datetime.now)
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
-    followers = db.relationship('Follow',foreign_key=[Follow.follower_id],
+    followers = db.relationship('Follow',foreign_keys=[Follow.follower_id],
                                 backref=db.backref('followed',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
-    followed = db.relationship('Follow',foreign_key=[Follow.follower_id],
+    followed = db.relationship('Follow',foreign_keys=[Follow.follower_id],
                                 backref=db.backref('follower',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
+    likes = db.relationship('Travel',secondary=like,
+                            backref=db.backref('likeusers',lazy='dynamic'))
 
     @property
     def password(self):
@@ -65,9 +79,3 @@ class Travel(db.Model):
             
     def __repr__(self):
         return '<Travel:{}>'.format(self.title)
-
-
-class Follow(db.Model):
-    follower_id = db.Column(db.Integer,primary_key=True) #粉丝
-    followed_id = db.Column(db.Integer,primary_key=True) #被关注的人
-    timestamp = db.Column(db.DateTime,default=datetime.now)
