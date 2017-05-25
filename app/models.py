@@ -4,8 +4,8 @@ from datetime import datetime
 
 
 class Follow(db.Model):
-    follower_id = db.Column(db.Integer,primary_key=True) #粉丝
-    followed_id = db.Column(db.Integer,primary_key=True) #被关注的人
+    follower_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #粉丝
+    followed_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #被关注的人
     timestamp = db.Column(db.DateTime,default=datetime.now)
 
 
