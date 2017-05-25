@@ -2,7 +2,7 @@ from os import environ
 
 
 class Config:
-    pass
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):

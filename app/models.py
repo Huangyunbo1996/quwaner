@@ -11,6 +11,7 @@ class User(db.Model):
     school = db.Column(db.String(40))
     province = db.Column(db.String(20))
     city = db.Column(db.String(40))
+    register_time = db.Column(db.DateTime,default=datetime.now)
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
 
     @property
@@ -40,6 +41,7 @@ class Travel(db.Model):
     destination = db.Column(db.String(40))
     body = db.Column(db.Text)
     background_img = db.Column(db.String(200))
+    publish_time = db.Column(db.DateTime,default=datetime.now)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
 
     def __init__(self,title,begin_time,travel_days,avg_cost,
