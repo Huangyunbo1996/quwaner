@@ -35,6 +35,23 @@ class Tag(db.Model):
         return '<Tag:{}>'.format(self.name)
 
 
+class PrivateMessage(db.Model):
+    sender_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True)
+    recipient_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True)
+    timestamp = db.Column(db.DateTime,default=datetime.now)
+    detail_message = db.Column(db.String(200))
+    reader = db.Column(db.Boolean,default=False)
+
+    def __init__(self,sender,recipient,detail_message):
+        self.sender_id = sender.id
+        self.recipient_id = recipient.id
+        self.detail_message = detail_message
+
+    def __repr__(self):
+        return '<PrivateMessage:{} to {}({})>'.format(self.sender_id,self.recipient_id,
+                                                        self.detail_message)
+
+
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -47,7 +64,7 @@ class User(db.Model):
     register_time = db.Column(db.DateTime,default=datetime.now)
     avatar = db.Column(db.String(200))
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
-    followers = db.relationship('Follow',foreign_keys=[Follow.follower_id],
+    followers = db.relationship('Follow',foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
@@ -60,6 +77,18 @@ class User(db.Model):
     comments = db.relationship('Comment',backref='user',lazy='dynamic')
     tags = db.relationship('Tag',secondary='user_tag',
                             backref=db.backref('users',lazy='dynamic'))
+    system_messages = db.relationship('SystemMessage',backref='user',
+                                        lazy='dynamic')
+    send_messages = db.relationship('PrivateMessage',
+                                    foreign_keys=[PrivateMessage.sender_id],
+                                    backref=db.backref('senders',lazy='joined'),
+                                    lazy='dynamic',
+                                    cascade='all,delete-orphan')
+    recive_messages = db.relationship('PrivateMessage',
+                                      foreign_keys=[PrivateMessage.recipient_id],
+                                      backref=db.backref('recipients',lazy='joined'),
+                                      lazy='dynamic',
+                                      cascade='all,delete-orphan')
 
     @property
     def password(self):
@@ -123,3 +152,12 @@ class Comment(db.Model):
 
     def __repr__(self):
         return '<Comment:{}>'.format(self.body[:5] + '...')
+
+
+class SystemMessage(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    title = db.Column(db.String(40))
+    timestamp = db.Column(db.DateTime,default=datetime.now)
+    detail_message = db.Column(db.String(200))
+    readed = db.Column(db.Boolean,default=False)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
