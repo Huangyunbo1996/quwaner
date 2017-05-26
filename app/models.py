@@ -3,15 +3,36 @@ from . import db
 from datetime import datetime
 
 
+like = db.Table('like',
+                db.Column('user_id',db.Integer,db.ForeignKey('user.id')),
+                db.Column('travel_id',db.Integer,db.ForeignKey('travel.id')))
+
+
+user_tag = db.Table('user_tag',
+                    db.Column('user_id',db.Integer,db.ForeignKey('user.id')),
+                    db.Column('tag_id',db.Integer,db.ForeignKey('tag.id')))
+
+
+travel_tag = db.Table('travel_tag',
+                    db.Column('travel_id',db.Integer,db.ForeignKey('travel.id')),
+                    db.Column('tag_id',db.Integer,db.ForeignKey('tag.id')))
+
+
 class Follow(db.Model):
     follower_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #粉丝
     followed_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #被关注的人
     timestamp = db.Column(db.DateTime,default=datetime.now)
 
 
-like = db.Table('like',
-                db.Column('user_id',db.Integer,db.ForeignKey('user.id')),
-                db.Column('travel_id',db.Integer,db.ForeignKey('travel.id')))
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20))
+
+    def __init__(self,name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Tag:{}>'.format(self.name)
 
 
 class User(db.Model):
@@ -37,6 +58,8 @@ class User(db.Model):
     likes = db.relationship('Travel',secondary=like,
                             backref=db.backref('likeusers',lazy='dynamic'))
     comments = db.relationship('Comment',backref='user',lazy='dynamic')
+    tags = db.relationship('Tag',secondary='user_tag',
+                            backref=db.backref('users',lazy='dynamic'))
 
     @property
     def password(self):
@@ -68,6 +91,8 @@ class Travel(db.Model):
     publish_time = db.Column(db.DateTime,default=datetime.now)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
     comments = db.relationship('Comment',backref='travel',lazy='dynamic')
+    tags = db.relationship('Tag',secondary='travel_tag',
+                            backref=db.backref('travels',lazy='dynamic'))
 
     def __init__(self,title,begin_time,travel_days,avg_cost,
                 destination,body,background_img,user_id):
