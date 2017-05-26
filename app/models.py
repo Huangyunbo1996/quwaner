@@ -24,6 +24,7 @@ class User(db.Model):
     province = db.Column(db.String(20))
     city = db.Column(db.String(40))
     register_time = db.Column(db.DateTime,default=datetime.now)
+    avatar = db.Column(db.String(200))
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
     followers = db.relationship('Follow',foreign_keys=[Follow.follower_id],
                                 backref=db.backref('followed',lazy='joined'),
@@ -35,6 +36,7 @@ class User(db.Model):
                                 cascade='all,delete-orphan')
     likes = db.relationship('Travel',secondary=like,
                             backref=db.backref('likeusers',lazy='dynamic'))
+    comments = db.relationship('Comment',backref='user',lazy='dynamic')
 
     @property
     def password(self):
@@ -65,6 +67,7 @@ class Travel(db.Model):
     background_img = db.Column(db.String(200))
     publish_time = db.Column(db.DateTime,default=datetime.now)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    coments = db.relationship('Comment',backref='travel',lazy='dynamic')
 
     def __init__(self,title,begin_time,travel_days,avg_cost,
                 destination,body,background_img,user_id):
@@ -79,3 +82,17 @@ class Travel(db.Model):
             
     def __repr__(self):
         return '<Travel:{}>'.format(self.title)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    travel_id = db.Column(db.Integer,db.ForeignKey('travel.id'))
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime,default=datetime.now)
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return '<Comment:{}>'.format(self.body[:5] + '...')
