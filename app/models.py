@@ -67,7 +67,7 @@ class Travel(db.Model):
     background_img = db.Column(db.String(200))
     publish_time = db.Column(db.DateTime,default=datetime.now)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
-    coments = db.relationship('Comment',backref='travel',lazy='dynamic')
+    comments = db.relationship('Comment',backref='travel',lazy='dynamic')
 
     def __init__(self,title,begin_time,travel_days,avg_cost,
                 destination,body,background_img,user_id):
@@ -91,8 +91,10 @@ class Comment(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime,default=datetime.now)
 
-    def __init__(self):
-        pass
+    def __init__(self,user_id,travel_id,body):
+        self.user_id = user_id
+        self.travel_id = travel_id
+        self.body = body
 
     def __repr__(self):
         return '<Comment:{}>'.format(self.body[:5] + '...')
