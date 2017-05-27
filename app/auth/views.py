@@ -5,7 +5,7 @@ from ..utils.email import send_mail,email_server
 from .. import db
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import render_template,redirect,flash,request,url_for,make_response,current_app
-from flask_login import login_user,current_user
+from flask_login import login_user,current_user,login_required
 
 @auth.route('/register',methods=['GET','POST'])
 def register():
@@ -22,12 +22,14 @@ def register():
         return redirect(url_for('auth.jumpEmail'))
     return render_template('auth/register.html', form=form)
 
+@login_required
 @auth.route('/jumpEmail')
 def jumpEmail():
     server = current_user.email.split('@')[-1:][0]
     server_url = email_server[server]
     return render_template('auth/jumpEmail.html',url=server_url,user=current_user)
 
+@login_required
 @auth.route('/confirm')
 def confirm():
     if current_user.confirmed == True:
@@ -38,3 +40,15 @@ def confirm():
     else:
         flash('验证失败或验证链接已过期')
     return redirect(url_for('main.index')) 
+
+@login_required
+@auth.route('/reconfirm')
+def reconfirm():
+    if current_user.confirmed == True:
+        return redirect(url_for('main.index'))
+    token = current_user.generate_confirm_token()
+    send_mail(recipient=current_user.email, subject='请验证你的趣玩儿账户',
+                    template='auth/email/confirm', user=current_user, 
+                    token=token)
+    flash('重新发送验证邮件成功')
+    return redirect(url_for('main.index'))
