@@ -1,6 +1,10 @@
 from werkzeug.security import generate_password_hash,check_password_hash
-from . import db
+from flask_login import UserMixin
+from flask import current_app
+from . import db,login_manager
+from .utils.email import send_mail
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 like = db.Table('like',
@@ -18,7 +22,7 @@ travel_tag = db.Table('travel_tag',
                     db.Column('tag_id',db.Integer,db.ForeignKey('tag.id')))
 
 
-class Follow(db.Model):
+class Follow(db.Model,UserMixin):
     follower_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #粉丝
     followed_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #被关注的人
     timestamp = db.Column(db.DateTime,default=datetime.now)
@@ -63,6 +67,7 @@ class User(db.Model):
     city = db.Column(db.String(40))
     register_time = db.Column(db.DateTime,default=datetime.now)
     avatar = db.Column(db.String(200))
+    confirmed = db.Column(db.Boolean,default=False)
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
     followers = db.relationship('Follow',foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed',lazy='joined'),
@@ -98,6 +103,11 @@ class User(db.Model):
     def password(self,password):
         self.password_hash = generate_password_hash(password)
 
+    def generate_confirm_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'],expires_in=1800)
+        token = s.dumps({'confirm':self.id})
+        return token
+
     def __init__(self,email,username,password):
         self.email = email
         self.username = username
@@ -106,6 +116,11 @@ class User(db.Model):
     def __repr__(self):
         return '<User:{}>'.format(self.username)
         
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
     
 class Travel(db.Model):
 

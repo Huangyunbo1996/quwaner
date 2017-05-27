@@ -1,0 +1,18 @@
+div.login-form{
+    width: 80%;
+    margin-left: 10%;
+}
+div.login-form div{
+    margin-bottom: 20px;
+}
+.fixed-bottom {position: fixed;bottom: 0;width:100%;}
+footer.footer{
+text-align: center;
+margin-bottom: 30px;
+}
+footer.footer hr{
+     background: none repeat scroll 0 0 #000000;
+    border: thin none;
+    height: 1px;
+    width: 80%;
+}
