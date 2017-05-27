@@ -15,5 +15,10 @@ def make_shell_context():
 
 manager.add_command('db',MigrateCommand)
 
+@manager.command
+def re_create_db():
+    db.drop_all()
+    db.create_all()
+
 if __name__ == '__main__':
     manager.run()

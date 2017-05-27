@@ -22,7 +22,7 @@ travel_tag = db.Table('travel_tag',
                     db.Column('tag_id',db.Integer,db.ForeignKey('tag.id')))
 
 
-class Follow(db.Model,UserMixin):
+class Follow(db.Model):
     follower_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #粉丝
     followed_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #被关注的人
     timestamp = db.Column(db.DateTime,default=datetime.now)
@@ -56,7 +56,7 @@ class PrivateMessage(db.Model):
                                                         self.detail_message)
 
 
-class User(db.Model):
+class User(db.Model,UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(40), unique = True)
@@ -107,6 +107,21 @@ class User(db.Model):
         s = Serializer(current_app.config['SECRET_KEY'],expires_in=1800)
         token = s.dumps({'confirm':self.id})
         return token
+
+    def confirm(self,token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            confirm_info = s.loads(token)
+        except:
+            return False
+        else:
+            confirm_id = confirm_info.get('confirm')
+            if confirm_id != self.id:
+                return False
+        self.confirmed = True
+        db.session.add(self)
+        db.session.commit()
+        return True
 
     def __init__(self,email,username,password):
         self.email = email

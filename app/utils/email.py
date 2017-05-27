@@ -16,3 +16,11 @@ def send_mail(recipient,subject,template,**kwargs):
 def async_send_email(app,msg):
     with app.app_context():
         mail.send(msg)
+
+email_server = {
+    'qq.com' : 'https://mail.qq.com',
+    '163.com' : 'https://mail.163.com',
+    '126.com' : 'http://www.126.com',
+    'gmail.com' : 'https://mail.google.com',
+    'outlook.com' : 'https://outlook.live.com'
+}

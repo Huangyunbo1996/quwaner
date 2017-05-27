@@ -6,7 +6,7 @@ from ..models import User
 
 class RegisterForm(FlaskForm):
     username = StringField('',validators=[Length(min=6,max=40,message='用户名长度要求在6~40位'),Required(),
-                                                Regexp('[a-zA-Z0-9]+',message='用户名只能由字母、数字、下划线组成')],
+                                                Regexp('[\u4e00-\u9fa5a-zA-Z0-9]+',message='用户名只能由字母、数字、下划线组成')],
                                                 render_kw={"placeholder": "用户名"})
     email = StringField('',validators=[Required(),Email(message='请输入正确的邮箱地址')],
                                         render_kw={"placeholder": "邮箱地址"})
