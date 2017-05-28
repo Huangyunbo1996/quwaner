@@ -6,7 +6,18 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='register.css')}}">
 {% endblock %}
 
-{% block navbar %}{% endblock %}
+{% block navbar %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  {{msg}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}
 {% block content %}
 <div class="jumbotron">
     <div class="container-fluid">

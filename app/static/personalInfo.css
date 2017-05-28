@@ -1,0 +1,44 @@
+div.content{
+    width: 80%;
+    margin-left: 10%;
+}
+div.content-info{
+    height:200px;
+    background-size: cover;
+}
+div.avatar-image{
+    margin-left: 30px;
+}
+div.content-info-desc{
+
+}
+div.content-info-username{
+margin-left: 30px;
+font-size: 20px;
+display: inline;
+}
+div.content-info-follower{
+    display: inline;
+    font-size: 20px;
+}
+div.jumbotron{
+    height: 200px;
+}
+div.travel-image{
+    position: relative;
+    width: 100%;
+}
+div.travel-image h1{
+    position: absolute;
+    top: 200px;
+    left: 50px;
+    width: 100%;
+}
+div.travel-image h1 span{
+   color: white; 
+   font: bold 24px/45px Helvetica, Sans-Serif; 
+   letter-spacing: -1px;  
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.7);
+   padding: 10px; 
+}

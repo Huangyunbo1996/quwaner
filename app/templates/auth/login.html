@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}趣玩儿 - 登陆{% endblock %}
+{% block head %}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='register.css')}}">
+{% endblock %}
+
+{% block navbar %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  {{msg}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container-fluid">
+  <h1 class="text-center">趣玩儿</h1>
+  <p class="text-center">与志同道合的人分享旅行的快乐</p>
+    </div>
+</div>
+
+<div>
+<form class="form-signin" action="{{url_for('auth.login')}}" method="post">
+
+        {{ form.csrf_token }}
+
+        {{ wtf.form_field(form.email) }}
+
+        {{ wtf.form_field(form.password) }}
+
+<button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
-login_manager.login_message = '此操作需要登录。'
+login_manager.login_message = '请先进行登陆'
 mail = Mail()
 bootstrap = Bootstrap()
 
@@ -26,5 +26,8 @@ def create_app(config_name):
 
     from .auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
+
+    from .user import user_blueprint
+    app.register_blueprint(user_blueprint,url_prefix='/user')
 
     return app

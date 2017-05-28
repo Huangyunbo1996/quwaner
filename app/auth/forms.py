@@ -26,3 +26,9 @@ class RegisterForm(FlaskForm):
     def validate_username(self,field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('此用户名已被注册')
+
+
+class LoginForm(FlaskForm):
+    email = StringField('',validators=[Required(),Email(message='请输入正确的邮箱地址')],
+                            render_kw={'placeholder':'邮箱地址'})
+    password = PasswordField('',validators=[Required()],render_kw={'placeholder':'密码'})

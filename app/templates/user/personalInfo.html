@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}趣玩儿 - 个人信息{% endblock %}
+{% block head %}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='personalInfo.css')}}">
+{% endblock %}
+{% block content %}
+<div class="content">
+<!--<div class="content-info" style="background-image: url({{url_for('static',filename='images/background.png')}})">
+    <div class="avatar-image">
+    <img class="ui small circular image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKM8VKcfW5sh3slT0_SR4HgD6s7U07HiwBNN-m3x8djij69aMF">
+    </div>
+    <div class="content-info-desc">
+      <div class="content-info-username">
+    <label>{{user.username}}</label>
+      </div>
+      <div class="content-info-follower">
+    <label>Test</label>
+      </div>
+    </div>
+</div>-->
+<div class="col-sm-3">
+<div class="ui card">
+  <div class="image">
+    <a href="{{url_for('user.modifyAvatar')}}" class="ui image">
+    <img src="{{user.avatar}}">
+    </a>
+  </div>
+  <div class="content">
+    <a class="header">{{user.username}}</a>
+
+    <div class="description">
+      <a href="#">{{number_of_travels}} 游记&nbsp</a>
+      <a href="#">{{number_of_followers}} 粉丝&nbsp</a>
+      <a href="#">{{number_of_followed}} 关注</a>
+    </div>
+  </div>
+  <div class="extra content">
+    <a href="#">
+      <i class="user icon"></i>
+      {{number_of_friends}} 好友
+    </a>
+    {% if user.school %}
+    <a href="#">
+      <i class="marker icon"></i>
+      {{user.school}}
+    </a>
+    {% endif %}
+  </div>
+</div>
+</div>
+<div class="col-sm-9">
+  {% if travels %}
+  {% for travel in travels %}
+  <div class="travel-image">
+  <img class="ui fluid image" style="height:500px;" src="{{travel.background_img}}">
+  <h1><span>{{travel.title}} <i class="marker icon"></i>{{travel.destination}}<br />{{travel.user.username}}</span></h1>
+  <br>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+</div>
+
+{% endblock %}

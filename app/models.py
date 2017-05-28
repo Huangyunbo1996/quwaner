@@ -103,6 +103,9 @@ class User(db.Model,UserMixin):
     def password(self,password):
         self.password_hash = generate_password_hash(password)
 
+    def check_password(self,password):
+        return check_password_hash(self.password_hash,password)
+
     def generate_confirm_token(self):
         s = Serializer(current_app.config['SECRET_KEY'],expires_in=1800)
         token = s.dumps({'confirm':self.id})
