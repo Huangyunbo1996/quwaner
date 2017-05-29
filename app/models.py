@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
-from flask import current_app
+from flask import current_app, url_for
 from . import db,login_manager
 from .utils.email import send_mail
 from datetime import datetime
@@ -70,7 +70,7 @@ class User(db.Model,UserMixin):
     province = db.Column(db.String(20))
     city = db.Column(db.String(40))
     register_time = db.Column(db.DateTime,default=datetime.now)
-    avatar = db.Column(db.String(200))
+    avatar = db.Column(db.String(200), default='/static/images/default_avatar.jpg')
     confirmed = db.Column(db.Boolean,default=False)
     travels = db.relationship('Travel',backref='user',lazy='dynamic')
     followers = db.relationship('Follow',foreign_keys=[Follow.followed_id],

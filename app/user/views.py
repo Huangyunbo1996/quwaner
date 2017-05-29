@@ -14,8 +14,10 @@ from flask import render_template,current_app,request,flash,redirect,url_for
 def personalInfo():
     number_of_travels = len(current_user.travels.all())
     number_of_followers = current_user.followers.all()
+    followers = [User.query.get(user.follower_id) for user in number_of_followers]
     number_of_followed = current_user.followed.all()
-    number_of_friends = len(set(number_of_followers) & set(number_of_followed))
+    followed = [User.query.get(user.followed_id) for user in number_of_followed]
+    number_of_friends = len(set(followers) & set(followed))
     travels = current_user.travels.all()
     return render_template('user/personalInfo.html',user=current_user, travels=travels,
         number_of_travels=number_of_travels, number_of_followers=len(number_of_followers),
@@ -73,8 +75,10 @@ def userinfo(id):
         return redirect(url_for('user.personalInfo'))
     number_of_travels = len(user.travels.all())
     number_of_followers = user.followers.all()
+    followers = [User.query.get(follower_user.follower_id) for follower_user in number_of_followers]
     number_of_followed = user.followed.all()
-    number_of_friends = len(set(number_of_followers) & set(number_of_followed))
+    followed = [User.query.get(followed_user.followed_id) for followed_user in number_of_followed]
+    number_of_friends = len(set(followers) & set(followed))
     travels = user.travels.all()
     return render_template('user/userinfo.html', user=current_user, this_user=user, travels=travels,
         number_of_travels=number_of_travels, number_of_followers=len(number_of_followers),
@@ -84,6 +88,9 @@ def userinfo(id):
 @login_required
 def follow(id):
     user = User.query.get_or_404(id)
+    if current_user == user:
+        flash('不能关注自己')
+        return redirect(url_for('user.userinfo',id=id))        
     if current_user.is_following(user):
         flash('不允许重复关注')
         return redirect(url_for('user.userinfo',id=id))
@@ -101,3 +108,13 @@ def unfollow(id):
     current_user.unfollow(user)
     flash('取消关注成功')
     return redirect(url_for('user.userinfo',id=id))
+
+@user_blueprint.route('/fans/<int:id>')
+@login_required
+def fans(id):
+    user = User.query.get_or_404(id)
+    fans = [User.query.get(follow_object.follower_id) for follow_object in user.followers.all()]
+    # fans_info = [(fan.id, fan.username, len(fan.travels), 
+    #             len(fan.followers.all()), len(fan.followed.all()),
+    #             fan.school, fan.avatar) for fan in fans]
+    return render_template('user/fans.html', user=current_user, this_user=user, fans=fans, len=len)

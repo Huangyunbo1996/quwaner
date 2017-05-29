@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}趣玩儿 - 粉丝{% endblock %}
+{% block content %}
+<div class="content" style="width:80%;margin-left:10%;">
+    {% if fans %}
+    <div class="ui link cards">
+    {% for fan in fans %}
+    <div class="card">
+    <a href="{{url_for('user.userinfo',id=fan.id)}}" class="ui image">
+    <div class="image">
+      <img src="{{fan.avatar}}">
+    </div>
+    </a>
+    <div class="content">
+      <div class="header">{{fan.username}}</div>
+
+      <div class="description">
+        <a href="#">{{len(fan.travels.all())}} 游记&nbsp</a>
+      <a href="{{url_for('user.fans',id = fan.id)}}">{{len(fan.followers.all())}} 粉丝&nbsp</a>
+      <a href="#">{{len(fan.followed.all())}} 关注</a>
+      </div>
+    </div>
+    <div class="extra content">
+      <!--<span class="right floated">
+        Joined in 2013
+      </span>-->
+      {% if fan.school %}
+
+    <a href="#">
+      <i class="marker icon"></i>
+      {{fan.school}}
+    </a> {% endif %}
+    <br></br>
+    {% if not user.is_following(fan) %}
+    <a href="{{url_for('user.follow', id=fan.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          关注
+    </button></a> 
+    {% elif user.is_following(fan) and user.is_followed(fan) %}
+    <a href="{{url_for('user.unfollow', id=fan.id)}}"><button class="ui button" data-tooltip="取消关注？" style="margin-left:32%;">
+          <i class="exchange icon"></i>
+          互相关注
+    </button></a> 
+    {% elif user.is_following(fan)%}
+    <a href="{{url_for('user.unfollow', id=fan.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          取消关注
+    </button></a> 
+    {% endif %}
+    </div>
+  </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
