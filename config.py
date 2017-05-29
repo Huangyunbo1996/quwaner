@@ -1,9 +1,13 @@
 from os import environ
+from os.path import dirname, join
+from flask import url_for
 
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = '%dfsa@$%./'
+    ALLOW_AVATAR_TYPE = set(['jpg','jpeg','png'])
+    AVATAR_SAVE_PATH = join(join(join(join(dirname(__file__), 'app'), 'static'), 'images'), 'avatars')
 
 
 class DevelopmentConfig(Config):

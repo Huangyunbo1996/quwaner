@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}趣玩儿 - 修改头像{% endblock %}
+{% block content %}
+<div style="width:80%;margin-left:10%;">
+    <div class="col-sm-3 col-md-offset-3" style="margin-top:10%;text-align:center;">
+    <img id="avatar_preview" class="ui medium rounded image" src="{{user.avatar}}">
+    <p style="font-size:20px;margin-top:10px;">当前头像</p>
+    </div>
+    <div class="col-sm-3" style="margin-top:20%;">
+        <form method="post" enctype="multipart/form-data">
+        <input id="file_input" type="file" name="file">
+        <input type="submit" value="上传图片">
+        </form>
+    </div>
+</div>
+
+<script src="{{url_for('static',filename='modifyAvatar.js')}}"></script>
+{% endblock %}
