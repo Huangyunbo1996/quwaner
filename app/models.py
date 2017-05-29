@@ -27,6 +27,10 @@ class Follow(db.Model):
     followed_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key=True) #被关注的人
     timestamp = db.Column(db.DateTime,default=datetime.now)
 
+    def __init__(self, follower_id, followed_id):
+        self.follower_id = follower_id
+        self.followed_id = followed_id
+
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,6 +129,24 @@ class User(db.Model,UserMixin):
         db.session.add(self)
         db.session.commit()
         return True
+
+    def follow(self, user):
+        if not self.is_following(user):
+            new_follow = Follow(self.id, user.id)
+            db.session.add(new_follow)
+            db.session.commit()
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            f = self.followed.filter_by(followed_id = user.id).first()
+            db.session.delete(f)
+            db.session.commit()
+
+    def is_following(self, user):
+        return self.followed.filter_by(followed_id = user.id).first() is not None
+
+    def is_followed(self, user):
+        return self.followers.filter_by(follower_id = user.id).first() is not None        
 
     def __init__(self,email,username,password):
         self.email = email

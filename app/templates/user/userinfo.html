@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}趣玩儿 - 个人信息{% endblock %}
+{% block head %}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='personalInfo.css')}}">
+{% endblock %}
+{% block content %}
+<div class="content">
+
+<div class="col-sm-3">
+<div class="ui card">
+  <div class="image">
+    <img src="{{this_user.avatar}}">
+  </div>
+  <div class="content">
+    <a class="header">{{this_user.username}}</a>
+
+    <div class="description">
+      <a href="#">{{number_of_travels}} 游记&nbsp</a>
+      <a href="#">{{number_of_followers}} 粉丝&nbsp</a>
+      <a href="#">{{number_of_followed}} 关注</a>
+          
+    </div>
+  </div>
+  <div class="extra content">
+    <a href="#">
+      <i class="user icon"></i>
+      {{number_of_friends}} 好友
+    </a> {% if this_user.school %}
+    <br></br>
+    <a href="#">
+      <i class="marker icon"></i>
+      {{this_user.school}}
+    </a> {% endif %}
+    <br></br>
+    {% if not user.is_following(this_user) %}
+    <a href="{{url_for('user.follow', id=this_user.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          关注
+    </button></a> 
+    {% elif user.is_following(this_user) and user.is_followed(this_user) %}
+    <a href="{{url_for('user.unfollow', id=this_user.id)}}"><button class="ui button" data-tooltip="取消关注？" style="margin-left:32%;">
+          <i class="exchange icon"></i>
+          互相关注
+    </button></a> 
+    {% elif user.is_following(this_user)%}
+    <a href="{{url_for('user.unfollow', id=this_user.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          取消关注
+    </button></a> 
+    {% endif %}
+  </div>
+</div>
+</div>
+<div class="col-sm-9">
+  {% if travels %}
+  {% for travel in travels %}
+  <div class="travel-image">
+  <img class="ui fluid image" style="height:500px;" src="{{travel.background_img}}">
+  <h1><span>{{travel.title}} <i class="marker icon"></i>{{travel.destination}}<br />{{travel.user.username}}</span></h1>
+  <br>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+</div>
+
+{% endblock %}

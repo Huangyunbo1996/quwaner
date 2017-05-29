@@ -65,3 +65,39 @@ def verifySchool():
             flash('认证学校成功')
             return redirect(url_for('main.index'))
     return render_template('user/verifySchool.html', user=current_user)
+
+@user_blueprint.route('/userinfo/<int:id>')
+def userinfo(id):
+    user = User.query.get_or_404(id)
+    if user == current_user:
+        return redirect(url_for('user.personalInfo'))
+    number_of_travels = len(user.travels.all())
+    number_of_followers = user.followers.all()
+    number_of_followed = user.followed.all()
+    number_of_friends = len(set(number_of_followers) & set(number_of_followed))
+    travels = user.travels.all()
+    return render_template('user/userinfo.html', user=current_user, this_user=user, travels=travels,
+        number_of_travels=number_of_travels, number_of_followers=len(number_of_followers),
+        number_of_followed=len(number_of_followed), number_of_friends=number_of_friends)
+
+@user_blueprint.route('/follow/<int:id>')
+@login_required
+def follow(id):
+    user = User.query.get_or_404(id)
+    if current_user.is_following(user):
+        flash('不允许重复关注')
+        return redirect(url_for('user.userinfo',id=id))
+    current_user.follow(user)
+    flash('关注成功')
+    return redirect(url_for('user.userinfo',id=id))
+
+@user_blueprint.route('/unfollow/<int:id>')
+@login_required
+def unfollow(id):
+    user = User.query.get_or_404(id)
+    if not current_user.is_following(user):
+        flash('不允许取消关注一个你没有关注的人')
+        return redirect(url_for('user.userinfo',id=id))
+    current_user.unfollow(user)
+    flash('取消关注成功')
+    return redirect(url_for('user.userinfo',id=id))
