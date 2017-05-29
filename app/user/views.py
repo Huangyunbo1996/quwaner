@@ -114,7 +114,11 @@ def unfollow(id):
 def fans(id):
     user = User.query.get_or_404(id)
     fans = [User.query.get(follow_object.follower_id) for follow_object in user.followers.all()]
-    # fans_info = [(fan.id, fan.username, len(fan.travels), 
-    #             len(fan.followers.all()), len(fan.followed.all()),
-    #             fan.school, fan.avatar) for fan in fans]
     return render_template('user/fans.html', user=current_user, this_user=user, fans=fans, len=len)
+
+@user_blueprint.route('/followed/<int:id>')
+@login_required
+def followed(id):
+    user = User.query.get_or_404(id)
+    followeds = [User.query.get(follow_object.followed_id) for follow_object in user.followed.all()]
+    return render_template('user/followed.html', user=current_user, this_user=user, followeds=followeds, len=len)

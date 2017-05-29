@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}趣玩儿 - 我的关注{% endblock %}
+{% block content %}
+<div class="content" style="width:80%;margin-left:10%;">
+    {% if followeds %}
+    <div class="ui link cards">
+    {% for followed in followeds %}
+    <div class="card">
+    <a href="{{url_for('user.userinfo',id=followed.id)}}" class="ui image">
+    <div class="image">
+      <img src="{{followed.avatar}}">
+    </div>
+    </a>
+    <div class="content">
+      <div class="header">{{followed.username}}</div>
+
+      <div class="description">
+        <a href="#">{{len(followed.travels.all())}} 游记&nbsp</a>
+      <a href="{{url_for('user.fans',id = followed.id)}}">{{len(followed.followers.all())}} 粉丝&nbsp</a>
+      <a href="{{url_for('user.followed',id = followed.id)}}">{{len(followed.followed.all())}} 关注</a>
+      </div>
+    </div>
+    <div class="extra content">
+      <!--<span class="right floated">
+        Joined in 2013
+      </span>-->
+      {% if followed.school %}
+
+    <a href="#">
+      <i class="marker icon"></i>
+      {{followed.school}}
+    </a> {% endif %}
+    <br></br>
+    {% if not user.is_following(followed) %}
+    <a href="{{url_for('user.follow', id=followed.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          关注
+    </button></a> 
+    {% elif user.is_following(followed) and user.is_followed(followed) %}
+    <a href="{{url_for('user.unfollow', id=followed.id)}}"><button class="ui button" data-tooltip="取消关注？" style="margin-left:32%;">
+          <i class="exchange icon"></i>
+          互相关注
+    </button></a> 
+    {% elif user.is_following(followed)%}
+    <a href="{{url_for('user.unfollow', id=followed.id)}}"><button class="ui button" style="margin-left:32%;">
+          <i class="user icon"></i>
+          取消关注
+    </button></a> 
+    {% endif %}
+    </div>
+  </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

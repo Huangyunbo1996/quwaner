@@ -18,7 +18,7 @@
     <div class="description">
       <a href="#">{{number_of_travels}} 游记&nbsp</a>
       <a href="{{url_for('user.fans',id = this_user.id)}}">{{number_of_followers}} 粉丝&nbsp</a>
-      <a href="#">{{number_of_followed}} 关注</a>
+      <a href="{{url_for('user.followed',id = this_user.id)}}">{{number_of_followed}} 关注</a>
           
     </div>
   </div>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}趣玩儿 - 粉丝{% endblock %}
+{% block title %}趣玩儿 - 我的粉丝{% endblock %}
 {% block content %}
 <div class="content" style="width:80%;margin-left:10%;">
     {% if fans %}
@@ -17,7 +17,7 @@
       <div class="description">
         <a href="#">{{len(fan.travels.all())}} 游记&nbsp</a>
       <a href="{{url_for('user.fans',id = fan.id)}}">{{len(fan.followers.all())}} 粉丝&nbsp</a>
-      <a href="#">{{len(fan.followed.all())}} 关注</a>
+      <a href="{{url_for('user.followed',id = fan.id)}}">{{len(fan.followed.all())}} 关注</a>
       </div>
     </div>
     <div class="extra content">
