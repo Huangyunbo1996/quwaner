@@ -6,19 +6,7 @@
 {% endblock %}
 {% block content %}
 <div class="content">
-<!--<div class="content-info" style="background-image: url({{url_for('static',filename='images/background.png')}})">
-    <div class="avatar-image">
-    <img class="ui small circular image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKM8VKcfW5sh3slT0_SR4HgD6s7U07HiwBNN-m3x8djij69aMF">
-    </div>
-    <div class="content-info-desc">
-      <div class="content-info-username">
-    <label>{{user.username}}</label>
-      </div>
-      <div class="content-info-follower">
-    <label>Test</label>
-      </div>
-    </div>
-</div>-->
+
 <div class="col-sm-3">
 <div class="ui card">
   <div class="image">
@@ -40,10 +28,16 @@
       <i class="user icon"></i>
       {{number_of_friends}} 好友
     </a>
+    <br></br>
     {% if user.school %}
     <a href="#">
       <i class="marker icon"></i>
       {{user.school}}
+    </a>
+    {% else %}
+    <a href="{{url_for('user.verifySchool')}}">
+      <i class="marker icon"></i>
+      认证学校
     </a>
     {% endif %}
   </div>

@@ -1,0 +1,37 @@
+{% extends "base.html" %} 
+
+{% block title %}趣玩儿 - 认证学校{% endblock %}
+
+{% block head %}
+{{super()}}
+<script src="{{url_for('static', filename='school/chinaCityList.js')}}"></script>
+<script src="{{url_for('static', filename='school/chinaCitySelect.js')}}"></script>
+<script src="{{url_for('static', filename='school/chinaUniversityList.js')}}"></script>
+<script src="{{url_for('static', filename='school/chinaUniversitySelect.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='school/choosebox.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="school-content">
+<form action="{{url_for('user.verifySchool')}}" method="post" class="col-md-3 col-md-offset-5">
+<input value='点击选择学校' id='selectSchool' name='school' type='text' readonly="readonly">
+<input type="submit" value="确定">
+</form>
+</div>
+
+<div id="choose-box-wrapper">
+  <div id="choose-box">
+    <div id="choose-box-title">
+        <span>选择学校</span>
+    </div>
+    <p style="font-size:12px;text-indent:1em;"><span>搜索：</span><input id="searchSchool" type="text" value="搜索学校"/></p>
+    <div id="choose-a-province">
+    </div>
+    <div id="choose-a-school">
+    </div>
+    <div id="choose-box-bottom">
+        <input type="botton" id='close' value="关闭" />
+    </div>
+  </div>
+</div>
+{% endblock %}

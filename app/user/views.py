@@ -50,3 +50,18 @@ def modifyAvatar():
             db.session.commit()
             return redirect(url_for('user.modifyAvatar'))
     return render_template('user/modifyAvatar.html',user=current_user)
+
+@user_blueprint.route('/verifySchool',methods=['GET','POST'])
+@login_required
+def verifySchool():
+    if request.method == 'POST':
+        school = request.form.get('school')
+        if school == '' or school == '点击选择学校':
+            flash('请选择学校')
+        else:
+            current_user.school = school
+            db.session.add(current_user)
+            db.session.commit()
+            flash('认证学校成功')
+            return redirect(url_for('main.index'))
+    return render_template('user/verifySchool.html', user=current_user)
